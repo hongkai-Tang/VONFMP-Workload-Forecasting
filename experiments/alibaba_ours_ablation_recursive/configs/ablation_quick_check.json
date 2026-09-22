@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "project_root": "../../..",
+  "portable_dataset_path": "experiments/alibaba_ours_ablation_recursive/inputs/alibaba_selected_200/dataset.npz",
+  "time_axis": {
+    "resample_seconds": 60,
+    "start_seconds": 86400,
+    "end_seconds_exclusive": 777600
+  },
+  "split": {
+    "train_ratio": 0.60,
+    "validation_ratio": 0.20,
+    "test_ratio": 0.20
+  },
+  "grid": {
+    "history_lengths": [5],
+    "forecast_horizons": [1, 5, 15, 30, 60]
+  },
+  "protocol": {
+    "experiment_name": "Alibaba Ours direct multi-step real-data quick check",
+    "forecast_strategy": "direct_multi_step",
+    "membership_definition": "per_slot",
+    "target_window_steps": 1,
+    "seed": 7,
+    "num_states": 8,
+    "max_order": 3,
+    "time_decay": 0.02,
+    "message_passing_steps": 2,
+    "einstein_strength": 0.5,
+    "backoff_blend": 0.5,
+    "time_period_steps": 1440,
+    "prototype_length": 30,
+    "message_hidden_dim": 8,
+    "transition_hidden_dim": 32
+  },
+  "spatial": {"link_mode": "topology_only"},
+  "training": {
+    "epochs": 1,
+    "learning_rate": 0.003,
+    "weight_decay": 0.0001,
+    "gradient_clip": 5.0,
+    "max_origins_per_epoch": 3,
+    "early_stopping_patience": 1,
+    "dynamic_loss_weight": 0.25,
+    "adaptive_order_loss_weight": 0.25,
+    "device": "cpu",
+    "direct_horizon_batch_size": 60,
+    "direct_validation_origins": 2
+  },
+  "runtime": {
+    "progress_interval_seconds": 5,
+    "recursive_checkpoint_interval_h": 60,
+    "audit_workloads": 5,
+    "audit_origins_per_split": 1,
+    "bootstrap_samples": 20
+  },
+  "missing": {"max_causal_fill_steps": 3, "min_history_coverage": 0.80},
+  "selection": {
+    "max_workloads": 200,
+    "strategy": "valid_row_count",
+    "require_exact_count": true
+  },
+  "origins": {
+    "splits": ["validation", "test"],
+    "stride_steps": 600,
+    "include_boundary_origin": true,
+    "require_all_forecast_targets_observed": false
+  },
+  "source_priority": ["portable_csv"],
+  "sources": {
+    "portable_csv": {
+      "format": "csv",
+      "path": "experiments/alibaba_ours_lh_recursive/inputs/alibaba_selected_200/processed_60s.csv",
+      "has_header": true,
+      "columns": [],
+      "workload_column": "workload_id",
+      "node_column": "node_id",
+      "time_column": "time_seconds",
+      "time_unit": "seconds",
+      "delimiter": ",",
+      "resources": [
+        {"name": "cpu", "column": "cpu_observed", "scale": 1.0, "valid_min": 0.0, "valid_max": null},
+        {"name": "mem", "column": "mem_observed", "scale": 1.0, "valid_min": 0.0, "valid_max": null},
+        {"name": "disk_i", "column": "disk_i_observed", "scale": 1.0, "valid_min": 0.0, "valid_max": 1.0},
+        {"name": "disk_o", "column": "disk_o_observed", "scale": 1.0, "valid_min": 0.0, "valid_max": 1.0}
+      ]
+    }
+  },
+  "deployment_priority": ["portable_csv"],
+  "deployment_sources": {
+    "portable_csv": {
+      "format": "csv",
+      "path": "experiments/alibaba_ours_lh_recursive/inputs/alibaba_selected_200/selected_workloads.csv",
+      "required_columns": ["workload_id", "node_id"],
+      "workload_column": "workload_id",
+      "node_column": "node_id",
+      "has_header": true,
+      "delimiter": ","
+    }
+  },
+  "ablation_suite": {
+    "variants": ["ns_mem", "hypergraph", "dyn_trans", "vo_markov", "multi_hop"]
+  },
+  "output_dir": "experiments/alibaba_ours_ablation_recursive/quick_check_runs"
+}

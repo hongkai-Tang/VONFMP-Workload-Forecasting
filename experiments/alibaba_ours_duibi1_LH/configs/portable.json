@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "experiment_name": "Alibaba Ours direct multi-step L-H comparison",
+  "dataset_path": "../alibaba_ours_lh_recursive/inputs/alibaba_selected_200/dataset.npz",
+  "output_dir": "runs",
+  "seed": 7,
+  "time_step_seconds": 60,
+  "expected_workloads": 200,
+  "split": {
+    "train_ratio": 0.60,
+    "validation_ratio": 0.20,
+    "test_ratio": 0.20
+  },
+  "protocol": {
+    "forecast_strategy": "direct_multi_step",
+    "num_states": 8,
+    "history_lengths": [5, 15, 30, 60, 180, 360, 720, 1440],
+    "priority_history_length": 1440,
+    "remaining_history_order": [5, 15, 30, 60, 180, 360, 720],
+    "horizons": [
+      {"name": "long_1p2d", "steps": 1728, "display_unit": "days", "display_divisor": 1440.0},
+      {"name": "medium_8h", "steps": 480, "display_unit": "hours", "display_divisor": 60.0},
+      {"name": "short_60m", "steps": 60, "display_unit": "minutes", "display_divisor": 1.0}
+    ]
+  },
+  "membership": {
+    "max_fit_samples": 100000,
+    "kmeans_iterations": 40,
+    "temperature": 1.0,
+    "minimum_scale": 0.0001
+  },
+  "model": {
+    "max_order": 3,
+    "time_decay": 0.02,
+    "backoff_time_unit_steps": 1.0,
+    "backoff_smoothing": 1.0,
+    "backoff_threshold": 2.0,
+    "backoff_temperature": 1.0,
+    "backoff_blend": 0.5,
+    "time_period_steps": 1440,
+    "einstein_strength": 0.5,
+    "message_passing_steps": 2,
+    "message_hidden_dim": 8,
+    "transition_hidden_dim": 32,
+    "transition_horizon_chunk": 240,
+    "dropout": 0.0
+  },
+  "training": {
+    "epochs": 20,
+    "learning_rate": 0.003,
+    "weight_decay": 0.0001,
+    "gradient_clip": 5.0,
+    "max_origins_per_epoch": 128,
+    "validation_origins": 4,
+    "early_stopping_patience": 5,
+    "minimum_delta": 0.00001,
+    "dynamic_loss_weight": 0.25,
+    "adaptive_order_loss_weight": 0.25,
+    "brier_loss_weight": 0.0,
+    "batch_origins": {
+      "long_1p2d": 2,
+      "medium_8h": 4,
+      "short_60m": 8
+    },
+    "device": "auto"
+  },
+  "evaluation": {
+    "origin_stride_steps": 60,
+    "bootstrap_samples": 500,
+    "calibration_bins": 15,
+    "save_prediction_dtype": "float32"
+  },
+  "runtime": {
+    "progress_interval_seconds": 2.0,
+    "checkpoint_every_epochs": 1
+  }
+}
