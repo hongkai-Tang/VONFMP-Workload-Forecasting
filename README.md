@@ -108,7 +108,11 @@ full training run reproduces any particular published metric.
 
 ## Repository contents
 
-No manuscript, author information, tables, figures, downloaded Alibaba trace,
-derived dataset, checkpoint, or result archive is distributed here. All output
-directories are excluded by `.gitignore`. Review the `git status` file list
-before publishing or adding new files.
+No manuscript, tables, figures, downloaded Alibaba trace, derived dataset,
+checkpoint, or result archive is distributed here. All output directories are
+excluded by `.gitignore`. Review the `git status` file list before publishing
+or adding new files.
+
+## Contributors
+
+- [1JSK1](https://github.com/1JSK1) — Code contributor.
